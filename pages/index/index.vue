@@ -110,7 +110,7 @@
 		onLoad() {
 			// #ifdef APP-PLUS
 			if (uni.getSystemInfoSync().platform == "ios") {
-				//下载文件资源
+				//引用插件
 				lyBDFaceAuthIOS = uni.requireNativePlugin('longyoung-BDFaceAuth-iOS'); //ios
 				
 				//权限
@@ -118,7 +118,7 @@
 				
 				this.licenseIDStr = "longyoung-face-ios";
 			} else if (uni.getSystemInfoSync().platform == "android") {
-				//下载文件资源
+				//引用插件
 				lyBDFaceAuth = uni.requireNativePlugin('longyoung-BDFaceAuth'); //android
 				
 				//权限
