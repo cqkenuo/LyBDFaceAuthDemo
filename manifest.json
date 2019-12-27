@@ -1,5 +1,5 @@
 {
-    "name" : "LyBDFaceAuth",
+    "name" : "longyoung",
     "appid" : "__UNI__65B1201",
     "description" : "",
     "versionName" : "1.0.0",
@@ -52,17 +52,31 @@
             "sdkConfigs" : {}
         },
         "nativePlugins" : {
-            "longyoung-BDFaceAuth" : {
+            "longyoung-BDFaceAuth-iOS" : {
                 "__plugin_info__" : {
-                    "name" : "免费安卓端百度人脸识别、活体检测、人脸采集android",
-                    "description" : "longyoung出品，如有疑问，关注公众号「longyoung」后台发消息提问。",
-                    "platforms" : "Android",
-                    "url" : "",
+                    "name" : "【iPad】iOS人脸识别、百度活体检测、人脸采集【含安卓】 - [试用版，仅用于自定义调试基座]",
+                    "description" : "【支持iPad】longyoung出品，有疑问公众号「longyoung」后台提问。试用，免费测试。",
+                    "platforms" : "iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=1081",
                     "android_package_name" : "",
                     "ios_bundle_id" : "",
-                    "isCloud" : false,
-                    "bought" : -1,
-                    "pid" : "",
+                    "isCloud" : true,
+                    "bought" : 0,
+                    "pid" : "1081",
+                    "parameters" : {}
+                }
+            },
+            "longyoung-BDFaceAuth" : {
+                "__plugin_info__" : {
+                    "name" : "【横竖屏】安卓人脸识别、百度活体检测、人脸采集【含iOS端】 - [试用版，仅用于自定义调试基座]",
+                    "description" : "longyoung出品，如有疑问，关注公众号「longyoung」后台发消息提问。支持pad横竖屏。",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=976",
+                    "android_package_name" : "",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 0,
+                    "pid" : "976",
                     "parameters" : {}
                 }
             }

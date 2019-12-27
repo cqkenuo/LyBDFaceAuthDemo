@@ -31,15 +31,18 @@
 			<label class="ml-30">
 				<radio style="transform: scale(0.7);" value="r22" />无声音</label>
 		</radio-group>
-		
+
 		<view class="c-hint margin-l-r" style="margin-top: 30rpx;">文字颜色</view>
 		<input v-model="txtColor" class="margin-l-r" placeholder="请输入" />
-		
+
 		<view class="c-hint margin-l-r" style="margin-top: 30rpx;">背景颜色</view>
 		<input v-model="bgColor" class="margin-l-r" placeholder="请输入" />
-		
+
 		<view class="c-hint margin-l-r" style="margin-top: 30rpx;">圆的颜色</view>
 		<input v-model="roundColor" class="margin-l-r" placeholder="请输入" />
+
+		<!-- <view class="c-hint margin-l-r" style="margin-top: 30rpx;">zoom的值</view>
+		<input v-model="zoom" class="margin-l-r" placeholder="请输入" /> -->
 
 		<view class="button-sp-area">
 			<button type="primary" plain="true" @click="onScanFace()">开始活体采集</button>
@@ -97,10 +100,11 @@
 				],
 				isLivenessRandom: 0,
 				isSound: 1,
-				txtColor:'#3987FD',
-				bgColor:'#2F2F33',
-				roundColor:'#3987FD',
-				
+				txtColor: '#3987FD',
+				bgColor: '#2F2F33',
+				roundColor: '#3987FD',
+				zoom: 0.75,
+
 				resultStr: "",
 				imgBase64Str: ""
 			}
@@ -112,7 +116,7 @@
 				// this.judgeIosPermission('camera');//相机
 				this.licenseIDStr = "longyoung-face-ios";
 			} else if (uni.getSystemInfoSync().platform == "android") {
-				this.requestAndroidAPermission('android.permission.CAMERA'); //相机
+				this.requestAndroidPermission('android.permission.CAMERA'); //相机
 				// this.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE');//外部存储(含相册)读取权限
 				// this.requestAndroidPermission('android.permission.WRITE_EXTERNAL_STORAGE');//外部存储(含相册)写入权限
 				this.licenseIDStr = "longyoung-face-android";
@@ -123,9 +127,9 @@
 			//刷脸
 			onScanFace() {
 				console.error("tagg.onScanFace");
-			
+
 				self = this;
-			
+
 				var ary = [];
 				for (var i = 0; i < this.items.length; i++) {
 					var item = this.items[i];
@@ -133,21 +137,21 @@
 						ary[i] = item.value;
 					}
 				}
-			
-				if (uni.getSystemInfoSync().platform == "android") {//安卓
+
+				if (uni.getSystemInfoSync().platform == "android") { //安卓
 					lyBDFaceAuth.scanFace({
-						licenseID: this.licenseIDStr,
+						licenseID: this.licenseIDStr, //安卓，iOS后缀不一样
 						actionAry: ary, //不传无动作
 						isLivenessRandom: this.isLivenessRandom, //不传默认有序，0有序，1随机
-						isSound: this.isSound, //不传默认有声音，0无声，1有声
-						txtColor:this.txtColor,//文字颜色
-						bgColor:this.bgColor,//背景颜色
-						roundColor:this.roundColor//圆的颜色
+						isSound: this.isSound, //不传默认有声音，0无声，1有声，iOS无效
+						txtColor: this.txtColor, //文字颜色
+						bgColor: this.bgColor, //背景颜色，iOS设置无效，需要换图片facecover_new.png，路径 nativeplugins\longyoung-BDFaceAuth-iOS\ios\com.baidu.idl.face.faceSDK.bundle，具体看示例。
+						roundColor: this.roundColor //圆的颜色
 					}, result => {
 						console.log('file://' + result.imgPath);
-			
+
 						self.resultStr = "返回结果：\n" + JSON.stringify(result);
-			
+
 						//图片上传服务器
 						uni.uploadFile({
 							url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
@@ -158,7 +162,7 @@
 								var data = res.data;
 							}
 						});
-			
+
 						//***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
 						var bitmapT = new plus.nativeObj.Bitmap("test"); //test标识随便取
 						// 从本地加载Bitmap图片
@@ -172,25 +176,60 @@
 							console.log('加载图片失败：' + JSON.stringify(e));
 						});
 						//***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
-			
+
 					});
-				} else if (uni.getSystemInfoSync().platform == "ios") {//苹果
+				} else if (uni.getSystemInfoSync().platform == "ios") { //苹果
 					lyBDFaceAuthIOS.scanFace({
-						licenseID: this.licenseIDStr,
+						licenseID: this.licenseIDStr, //安卓，iOS后缀不一样
 						actionAry: ary, //不传无动作
 						isLivenessRandom: this.isLivenessRandom, //不传默认有序，0有序，1随机
-						isSound: this.isSound, //不传默认有声音，0无声，1有声
+						isSound: this.isSound, //不传默认有声音，0无声，1有声，iOS无效
+						txtColor: this.txtColor, //文字颜色
+						bgColor: this.bgColor, //背景颜色，iOS设置无效，需要换图片facecover_new.png，路径 nativeplugins\longyoung-BDFaceAuth-iOS\ios\com.baidu.idl.face.faceSDK.bundle，具体看示例。
+						roundColor: this.roundColor //圆的颜色
 					}, result => {
 						console.log('result=' + result);
 						self.resultStr = "返回结果（太长，截取前100字符）：\n" + JSON.stringify(result).substring(0, 100);
 						self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前100字符）：\n" + result.bestImgBase64.substring(0, 100);
 						self.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
+
+
+						//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
+						var bitmapT = new plus.nativeObj.Bitmap('test');
+						//加载base64图片
+						bitmapT.loadBase64Data(result.bestImgBase64, function(res) {
+							//保存base64图片
+							bitmapT.save("_faceImg/face.png", {}, function(res) {
+								bitmapT.clear(); //销毁bitmap对象
+
+								//图片上传服务器
+								uni.uploadFile({
+									url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
+									filePath: res.target,
+									method: 'post',
+									name: 'imgFile', //上传图片参数名
+									success: (res) => {
+										var data = res.data;
+									}
+								});
+
+							}, function(res) {
+								console.log("longyoung.save.fail=", res);
+							});
+
+						}, function(res) {
+							console.log("longyoung.fail=", res);
+						});
+						//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
+
+
+
 					});
 				}
-			
+
 			},
-			
-			
+
+
 			//动作绑定
 			checkboxChange: function(e) {
 				var items = this.items,
