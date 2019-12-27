@@ -58,10 +58,8 @@
 <script>
 	import permijs from '../../utiles/permission.js'
 
-	// #ifdef APP-PLUS
-	const lyBDFaceAuth = uni.requireNativePlugin('longyoung-BDFaceAuth'); //android
-	const lyBDFaceAuthIOS = uni.requireNativePlugin('longyoung-BDFaceAuth-iOS'); //ios
-	// #endif
+	var lyBDFaceAuth;
+	var lyBDFaceAuthIOS;
 
 	export default {
 		data() {
@@ -110,15 +108,24 @@
 			}
 		},
 		onLoad() {
-			//权限
 			// #ifdef APP-PLUS
 			if (uni.getSystemInfoSync().platform == "ios") {
+				//下载文件资源
+				lyBDFaceAuthIOS = uni.requireNativePlugin('longyoung-BDFaceAuth-iOS'); //ios
+				
+				//权限
 				// this.judgeIosPermission('camera');//相机
+				
 				this.licenseIDStr = "longyoung-face-ios";
 			} else if (uni.getSystemInfoSync().platform == "android") {
+				//下载文件资源
+				lyBDFaceAuth = uni.requireNativePlugin('longyoung-BDFaceAuth'); //android
+				
+				//权限
 				this.requestAndroidPermission('android.permission.CAMERA'); //相机
 				// this.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE');//外部存储(含相册)读取权限
 				// this.requestAndroidPermission('android.permission.WRITE_EXTERNAL_STORAGE');//外部存储(含相册)写入权限
+				
 				this.licenseIDStr = "longyoung-face-android";
 			}
 			// #endif
