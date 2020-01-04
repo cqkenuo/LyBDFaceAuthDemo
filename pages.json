@@ -6,7 +6,19 @@
 				"navigationBarTitleText": "longyoung"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/face-auth/face-auth",
+            "style": {
+            	"navigationBarTitleText": "longyoung-face"
+            }
+        }
+        ,{
+            "path" : "pages/bdocr/bdocr",
+            "style": {
+            	"navigationBarTitleText": "longyoung-ocr"
+            }
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "longyoung",
