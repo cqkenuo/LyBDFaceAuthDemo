@@ -67,7 +67,7 @@
 	import permijs from '../../utiles/permission.js'
 
 	var lyBDFaceAuth;
-	var lyBDFaceAuthIOS;
+	// var lyBDFaceAuthIOS;
 
 	export default {
 		data() {
@@ -119,17 +119,11 @@
 		onLoad() {
 			// #ifdef APP-PLUS
 			if (uni.getSystemInfoSync().platform == "ios") {
-				//引用插件
-				lyBDFaceAuthIOS = uni.requireNativePlugin('longyoung-BDFaceAuth-iOS'); //ios
-				
 				//权限
 				// this.judgeIosPermission('camera');//相机
 				
 				this.licenseIDStr = "longyoung-face-ios";
 			} else if (uni.getSystemInfoSync().platform == "android") {
-				//引用插件
-				lyBDFaceAuth = uni.requireNativePlugin('longyoung-BDFaceAuth'); //android
-				
 				//权限
 				this.requestAndroidPermission('android.permission.CAMERA'); //相机
 				// this.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE');//外部存储(含相册)读取权限
@@ -137,6 +131,9 @@
 				
 				this.licenseIDStr = "longyoung-face-android";
 			}
+			
+			//引用插件
+			lyBDFaceAuth = uni.requireNativePlugin('longyoung-BDFaceAuth'); 
 			// #endif
 		},
 		methods: {
@@ -154,136 +151,100 @@
 					}
 				}
 
-				if (uni.getSystemInfoSync().platform == "android") { //安卓
-					lyBDFaceAuth.scanFace({
-						licenseID: this.licenseIDStr, //安卓，iOS后缀不一样
-						actionAry: ary, //不传无动作
-						isLivenessRandom: this.isLivenessRandom, //不传默认有序，0有序，1随机
-						isSound: this.isSound, //不传默认有声音，0无声，1有声，iOS无效
-						frontBack: this.frontBack, //不传默认前置，0前置，1后置
-						txtColor: this.txtColor, //文字颜色
-						bgColor: this.bgColor, //背景颜色，iOS设置无效，需要换图片facecover_new.png，路径 nativeplugins\longyoung-BDFaceAuth-iOS\ios\com.baidu.idl.face.faceSDK.bundle，具体看示例。
-						roundColor: this.roundColor //圆的颜色
-					}, result => {
-						//旧代码可删除
-						// console.log('file://' + result.imgPath);
+				// 		//旧代码可删除
+				// 		// console.log('file://' + result.imgPath);
+				// 		// self.resultStr = "返回结果：\n" + JSON.stringify(result);
+				// 		// //图片上传服务器
+				// 		// uni.uploadFile({
+				// 		// 	url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
+				// 		// 	filePath: 'file://' + result.imgPath, //图片本地路径，上传服务器需要加这个头'file://'
+				// 		// 	method: 'post',
+				// 		// 	name: 'imgFile', //上传图片参数名
+				// 		// 	success: (res) => {
+				// 		// 		var data = res.data;
+				// 		// 	}
+				// 		// });
 
-						// self.resultStr = "返回结果：\n" + JSON.stringify(result);
+				// 		// //***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
+				// 		// var bitmapT = new plus.nativeObj.Bitmap("test"); //test标识随便取
+				// 		// // 从本地加载Bitmap图片
+				// 		// bitmapT.load(result.imgPath, function() {
+				// 		// 	console.log('加载图片成功');
+				// 		// 	var base4 = bitmapT.toBase64Data();
+				// 		// 	console.log('lygg.base64=' + base4);
+				// 		// 	self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前100字符）：\n" + base4.substring(0, 100);
+				// 		// 	self.imgBase64Str = base4.replace(/[\r\n]/g, ""); //显示图片
+				// 		// }, function(e) {
+				// 		// 	console.log('加载图片失败：' + JSON.stringify(e));
+				// 		// });
+				// 		// //***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
 
-						// //图片上传服务器
-						// uni.uploadFile({
-						// 	url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
-						// 	filePath: 'file://' + result.imgPath, //图片本地路径，上传服务器需要加这个头'file://'
-						// 	method: 'post',
-						// 	name: 'imgFile', //上传图片参数名
-						// 	success: (res) => {
-						// 		var data = res.data;
-						// 	}
-						// });
+				lyBDFaceAuth.scanFace({
+					licenseID: this.licenseIDStr, //安卓，iOS后缀不一样
+					actionAry: ary, //不传无动作
+					isLivenessRandom: this.isLivenessRandom, //不传默认有序，0有序，1随机
+					isSound: this.isSound, //不传默认有声音，0无声，1有声，iOS设置无效
+					frontBack: this.frontBack, //不传默认前置，0前置，1后置
+					txtColor: this.txtColor, //文字颜色
+					bgColor: this.bgColor, //背景颜色，iOS设置无效，需要换图片facecover_new.png，路径 nativeplugins\longyoung-BDFaceAuth-iOS\ios\com.baidu.idl.face.faceSDK.bundle，具体看示例。
+					roundColor: this.roundColor //圆的颜色
+				}, result => {
 
-						// //***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
-						// var bitmapT = new plus.nativeObj.Bitmap("test"); //test标识随便取
-						// // 从本地加载Bitmap图片
-						// bitmapT.load(result.imgPath, function() {
-						// 	console.log('加载图片成功');
-						// 	var base4 = bitmapT.toBase64Data();
-						// 	console.log('lygg.base64=' + base4);
-						// 	self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前100字符）：\n" + base4.substring(0, 100);
-						// 	self.imgBase64Str = base4.replace(/[\r\n]/g, ""); //显示图片
-						// }, function(e) {
-						// 	console.log('加载图片失败：' + JSON.stringify(e));
-						// });
-						// //***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
-						
-						
-						
-						console.log('result=' + result);
-						self.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
-						self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
-						self.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
-						
-						
-						//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
-						var bitmapT = new plus.nativeObj.Bitmap('test');
-						//加载base64图片
-						bitmapT.loadBase64Data(result.bestImgBase64, function(res) {
-							//保存base64图片
-							bitmapT.save("_faceImg/face.png", {}, function(res) {
-								bitmapT.clear(); //销毁bitmap对象
-						
-								//图片上传服务器
-								uni.uploadFile({
-									url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
-									filePath: res.target,
-									method: 'post',
-									name: 'imgFile', //上传图片参数名
-									success: (res) => {
-										var data = res.data;
-									}
-								});
-						
-							}, function(res) {
-								console.log("longyoung.save.fail=", res);
-							});
-						
-						}, function(res) {
-							console.log("longyoung.fail=", res);
-						});
-						//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
-						
-						
-						
 
+					//模拟登录
+					uni.showLoading({
+						mask:true,
+						title:"登录中"
 					});
-				} else if (uni.getSystemInfoSync().platform == "ios") { //苹果
-					lyBDFaceAuthIOS.scanFace({
-						licenseID: this.licenseIDStr, //安卓，iOS后缀不一样
-						actionAry: ary, //不传无动作
-						isLivenessRandom: this.isLivenessRandom, //不传默认有序，0有序，1随机
-						isSound: this.isSound, //不传默认有声音，0无声，1有声，iOS无效
-						frontBack: this.frontBack, //不传默认前置，0前置，1后置
-						txtColor: this.txtColor, //文字颜色
-						bgColor: this.bgColor, //背景颜色，iOS设置无效，需要换图片facecover_new.png，路径 nativeplugins\longyoung-BDFaceAuth-iOS\ios\com.baidu.idl.face.faceSDK.bundle，具体看示例。
-						roundColor: this.roundColor //圆的颜色
-					}, result => {
-						console.log('result=' + result);
-						self.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
-						self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
-						self.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
-
-
-						//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
-						var bitmapT = new plus.nativeObj.Bitmap('test');
-						//加载base64图片
-						bitmapT.loadBase64Data(result.bestImgBase64, function(res) {
-							//保存base64图片
-							bitmapT.save("_faceImg/face.png", {}, function(res) {
-								bitmapT.clear(); //销毁bitmap对象
-
-								//图片上传服务器
-								uni.uploadFile({
-									url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
-									filePath: res.target,
-									method: 'post',
-									name: 'imgFile', //上传图片参数名
-									success: (res) => {
-										var data = res.data;
-									}
-								});
-
-							}, function(res) {
-								console.log("longyoung.save.fail=", res);
+					let timeoutId = setTimeout(function() {
+						uni.hideLoading();
+						uni.showToast({
+							title:"登录成功",
+							icon:"none"
+						})
+						clearTimeout(timeoutId);
+					}, 2*1000);
+					//模拟登录
+					
+					
+					
+					console.log('result=' + result);//图片存在 result.bestImgBase64，显示图片需要加头"data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, "")
+					self.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
+					self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
+					self.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
+				
+				
+					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
+					var bitmapT = new plus.nativeObj.Bitmap('test');
+					//加载base64图片
+					bitmapT.loadBase64Data(result.bestImgBase64, function(res) {
+						//保存base64图片
+						bitmapT.save("_faceImg/face.png", {}, function(res) {
+							bitmapT.clear(); //销毁bitmap对象
+				
+							//图片上传服务器
+							uni.uploadFile({
+								url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
+								filePath: res.target,
+								method: 'post',
+								name: 'imgFile', //上传图片参数名
+								success: (res) => {
+									var data = res.data;
+								}
 							});
-
+				
 						}, function(res) {
-							console.log("longyoung.fail=", res);
+							console.log("longyoung.save.fail=", res);
 						});
-						//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
-
-
-
+				
+					}, function(res) {
+						console.log("longyoung.fail=", res);
 					});
-				}
+					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
+				
+				});
+				
+				
 
 			},
 

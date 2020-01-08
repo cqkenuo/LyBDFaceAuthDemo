@@ -49,34 +49,66 @@
             /* ios打包配置 */
             "ios" : {},
             /* SDK配置 */
-            "sdkConfigs" : {}
+            "sdkConfigs" : {},
+            "icons" : {
+                "android" : {
+                    "hdpi" : "unpackage/res/icons/72x72.png",
+                    "xhdpi" : "unpackage/res/icons/96x96.png",
+                    "xxhdpi" : "unpackage/res/icons/144x144.png",
+                    "xxxhdpi" : "unpackage/res/icons/192x192.png"
+                },
+                "ios" : {
+                    "appstore" : "unpackage/res/icons/1024x1024.png",
+                    "ipad" : {
+                        "app" : "unpackage/res/icons/76x76.png",
+                        "app@2x" : "unpackage/res/icons/152x152.png",
+                        "notification" : "unpackage/res/icons/20x20.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png",
+                        "proapp@2x" : "unpackage/res/icons/167x167.png",
+                        "settings" : "unpackage/res/icons/29x29.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "spotlight" : "unpackage/res/icons/40x40.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png"
+                    },
+                    "iphone" : {
+                        "app@2x" : "unpackage/res/icons/120x120.png",
+                        "app@3x" : "unpackage/res/icons/180x180.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png",
+                        "notification@3x" : "unpackage/res/icons/60x60.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "settings@3x" : "unpackage/res/icons/87x87.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png",
+                        "spotlight@3x" : "unpackage/res/icons/120x120.png"
+                    }
+                }
+            }
         },
         "nativePlugins" : {
-            "longyoung-BDFaceAuth-iOS" : {
+            "longyoung-BDFaceAuth" : {
                 "__plugin_info__" : {
-                    "name" : "【iPad】iOS人脸识别、百度活体检测、人脸采集【含安卓】 - [试用版，仅用于自定义调试基座]",
-                    "description" : "【支持iPad】longyoung出品，有疑问公众号「longyoung」后台提问。试用，免费测试。",
-                    "platforms" : "iOS",
-                    "url" : "https://ext.dcloud.net.cn/plugin?id=1081",
-                    "android_package_name" : "",
+                    "name" : "【横竖屏后摄】人脸识别、百度活体检测、人脸采集【双端】",
+                    "description" : "百度免费提供活体检测，有疑问，关注公众号「longyoung」后台发消息提问。支持平板横竖屏后摄。",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=976",
+                    "android_package_name" : "com.longyoung.facedemo",
                     "ios_bundle_id" : "",
                     "isCloud" : true,
-                    "bought" : 0,
-                    "pid" : "1081",
+                    "bought" : 1,
+                    "pid" : "976",
                     "parameters" : {}
                 }
             },
-            "longyoung-BDFaceAuth" : {
+            "longyoung-BDOCR" : {
                 "__plugin_info__" : {
-                    "name" : "【横竖屏】安卓人脸识别、百度活体检测、人脸采集【含iOS端】 - [试用版，仅用于自定义调试基座]",
-                    "description" : "longyoung出品，如有疑问，关注公众号「longyoung」后台发消息提问。支持pad横竖屏。",
+                    "name" : "【限免】百度身份证识别、银行卡识别、文字识别",
+                    "description" : "longyoung出品，如有疑问，关注公众号「longyoung」后台发消息提问。",
                     "platforms" : "Android",
-                    "url" : "https://ext.dcloud.net.cn/plugin?id=976",
-                    "android_package_name" : "",
-                    "ios_bundle_id" : "",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=1189",
+                    "android_package_name" : "com.longyoung.facedemo",
+                    "ios_bundle_id" : "com.longyoung.facedemo",
                     "isCloud" : true,
-                    "bought" : 0,
-                    "pid" : "976",
+                    "bought" : 1,
+                    "pid" : "1189",
                     "parameters" : {}
                 }
             }
