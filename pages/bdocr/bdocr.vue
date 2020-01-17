@@ -15,7 +15,7 @@
 			<label class="ml-30">
 				<radio style="transform: scale(0.7);" value="r12" />检测</label>
 		</radio-group>
-		
+
 		<view class="c-hint margin-l-r" style="margin-top: 30rpx;">是否自动拍照</view>
 		<radio-group @change="onChange2" class="margin-l-r">
 			<label class="">
@@ -55,102 +55,70 @@
 		onLoad() {
 			// #ifdef APP-PLUS
 			if (uni.getSystemInfoSync().platform == "ios") {
-				//引用插件
-				lyBDOCR = uni.requireNativePlugin('longyoung-BDOCR'); //ios
-
 				//权限
 				// this.judgeIosPermission('camera');//相机
-
 			} else if (uni.getSystemInfoSync().platform == "android") {
-				//引用插件
-				lyBDOCR = uni.requireNativePlugin('longyoung-BDOCR'); //android
-
 				//权限
 				this.requestAndroidPermission('android.permission.CAMERA'); //相机
 				// this.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE');//外部存储(含相册)读取权限
 				// this.requestAndroidPermission('android.permission.WRITE_EXTERNAL_STORAGE');//外部存储(含相册)写入权限
-
 			}
+			//引用插件
+			lyBDOCR = uni.requireNativePlugin('longyoung-BDOCR');
 			// #endif
 		},
 		methods: {
-			//刷脸
+			//开始
 			onStart() {
 				console.error("tagg.onStart");
 
 				self = this;
 
-				if (uni.getSystemInfoSync().platform == "android") { //安卓
-					lyBDOCR.startOCRLy({
-						//type
-						//IDCardFront 身份证正面识别、IDCardBack 身份证反面识别、bankCard 银行卡识别、passport 护照识别。
-						//105通用文字识别（含位置信息版）、106通用文字识别、107通用文字识别(高精度版)、108通用文字识别（含位置信息高精度版）、109通用文字识别（含生僻字版）
-						//110网络图片识别、120行驶证识别、121驾驶证识别、122车牌识别、123营业执照识别、124通用票据识别、126数字识别、127二维码识别
-						//128名片识别、129手写文字识别、130彩票识别、131增值税发票识别、132自定义模板
-						type: this.type, 
-						accuracy: this.accuracy, //支持这三个字符串：auto、normal、high，精准度，精度越高，速度越慢。default：auto
-						// detectDirection: this.detectDirection,//是否检测图像朝向，0不检测，1检测
-						isAutoTakePhoto:this.isAutoTakePhoto//仅身份证有效，是否自动拍照，0手动，1自动
-					}, result => {
-						console.log('result=' + result);
-						self.resultStr = "返回结果：\n" + JSON.stringify(result);
-						// self.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
+				lyBDOCR.startOCRLy({
+					//type
+					//IDCardFront 身份证正面识别、IDCardBack 身份证反面识别、bankCard 银行卡识别、passport 护照识别。
+					//105通用文字识别（含位置信息版）、106通用文字识别、107通用文字识别(高精度版)、108通用文字识别（含位置信息高精度版）、109通用文字识别（含生僻字版）
+					//110网络图片识别、120行驶证识别、121驾驶证识别、122车牌识别、123营业执照识别、124通用票据识别、126数字识别、127二维码识别
+					//128名片识别、129手写文字识别、130彩票识别、131增值税发票识别、132自定义模板
+					type: this.type,
+					accuracy: this.accuracy, //支持这三个字符串：auto、normal、high，精准度，精度越高，速度越慢。default：auto
+					// detectDirection: this.detectDirection,//是否检测图像朝向，0不检测，1检测
+					isAutoTakePhoto: this.isAutoTakePhoto //仅身份证有效，是否自动拍照，0手动，1自动
+				}, result => {
+					console.log('result=' + result); //图片存在 result.bestImgBase64，显示图片需要加头"data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, "")
+					self.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
+					self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
+					self.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
 
+					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
+					var bitmapT = new plus.nativeObj.Bitmap('test');
+					//加载base64图片
+					bitmapT.loadBase64Data(result.bestImgBase64, function(res) {
+						//保存base64图片
+						bitmapT.save("_faceImg/face.png", {}, function(res) {
+							bitmapT.clear(); //销毁bitmap对象
 
-						//***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
-						var bitmapT = new plus.nativeObj.Bitmap("test"); //test标识随便取
-						// 从本地加载Bitmap图片
-						if (result.imgPath) {
-							bitmapT.load(result.imgPath, function() {
-								console.log('加载图片成功');
-								var base4 = bitmapT.toBase64Data();
-								console.log('lygg.base64=' + base4);
-								self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前100字符）：\n" + base4.substring(0, 100);
-								self.imgBase64Str = base4.replace(/[\r\n]/g, ""); //显示图片
-							}, function(e) {
-								console.log('加载图片失败：' + JSON.stringify(e));
+							//图片上传服务器
+							uni.uploadFile({
+								url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
+								filePath: res.target,
+								method: 'post',
+								name: 'imgFile', //上传图片参数名
+								success: (res) => {
+									var data = res.data;
+								}
 							});
-						} 
-						else if (self.imgBase64Str) {
-							self.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
-						}
-						//***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
 
+						}, function(res) {
+							console.log("longyoung.save.fail=", res);
+						});
 
+					}, function(res) {
+						console.log("longyoung.fail=", res);
 					});
-				} else if (uni.getSystemInfoSync().platform == "ios") { //苹果
-					lyBDOCR.startOCRLy({
-						type: this.type, //IDCardFront、IDCardBack、bankCard、passport、general
-						accuracy: this.accuracy, //支持这三个字符串：auto、normal、high，精准度，精度越高，速度越慢。default：auto
-						detectDirection: this.detectDirection,//是否检测图像朝向，0不检测，1检测
-						isAutoTakePhoto:this.isAutoTakePhoto//仅身份证有效，是否自动拍照，0手动，1自动
-					}, result => {
-						console.log('result=' + result);
-						self.resultStr = "返回结果（太长，截取前100字符）：\n" + JSON.stringify(result).substring(0, 100);
-						self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前100字符）：\n" + result.bestImgBase64.substring(0, 100);
-						// self.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
+					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
 
-						//***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
-						var bitmapT = new plus.nativeObj.Bitmap("test"); //test标识随便取
-						// 从本地加载Bitmap图片
-						if (result.imgPath) {
-							bitmapT.load(result.imgPath, function() {
-								console.log('加载图片成功');
-								var base4 = bitmapT.toBase64Data();
-								console.log('lygg.base64=' + base4);
-								self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前100字符）：\n" + base4.substring(0, 100);
-								self.imgBase64Str = base4.replace(/[\r\n]/g, ""); //显示图片
-							}, function(e) {
-								console.log('加载图片失败：' + JSON.stringify(e));
-							});
-						} 
-						else if (self.imgBase64Str) {
-							self.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
-						}
-						//***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
-
-					});
-				}
+				});
 
 			},
 
