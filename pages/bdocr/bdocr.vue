@@ -25,7 +25,7 @@
 		</radio-group>
 
 		<view class="button-sp-area">
-			<button type="primary" plain="true" @click="onStart()">开始</button>
+			<button type="primary" plain="true" @click="onStartBtn()">开始</button>
 		</view>
 
 		<image class="" style="width: 300rpx;height: 300rpx;" :src="imgBase64Str"></image>
@@ -69,10 +69,10 @@
 		},
 		methods: {
 			//开始
-			onStart() {
-				console.error("tagg.onStart");
+			onStartBtn() {
+				console.error("tagg.onStartBtn");
 
-				self = this;
+				let that = this;
 
 				lyBDOCR.startOCRLy({
 					//type
@@ -86,16 +86,16 @@
 					isAutoTakePhoto: this.isAutoTakePhoto //仅身份证有效，是否自动拍照，0手动，1自动
 				}, result => {
 					console.log('result=' + result); //图片存在 result.bestImgBase64，显示图片需要加头"data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, "")
-					self.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
-					self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
-					self.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
+					that.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
+					that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
+					that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
 
 					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
 					var bitmapT = new plus.nativeObj.Bitmap('test');
 					//加载base64图片
 					bitmapT.loadBase64Data(result.bestImgBase64, function(res) {
 						//保存base64图片
-						bitmapT.save("_faceImg/face.png", {}, function(res) {
+						bitmapT.save("_doc/face.png", {}, function(res) {
 							bitmapT.clear(); //销毁bitmap对象
 
 							//图片上传服务器
@@ -111,10 +111,18 @@
 
 						}, function(res) {
 							console.log("longyoung.save.fail=", res);
+							uni.showModal({
+								title:'bitmap保存错误',
+								content:JSON.stringify(res)
+							});
 						});
 
 					}, function(res) {
 						console.log("longyoung.fail=", res);
+						uni.showModal({
+							title:'base64转bitmap错误',
+							content:JSON.stringify(res)
+						});
 					});
 					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
 

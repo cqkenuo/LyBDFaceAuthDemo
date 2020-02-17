@@ -141,7 +141,7 @@
 			onScanFace() {
 				console.error("tagg.onScanFace");
 
-				self = this;
+				let that = this;
 
 				var ary = [];
 				for (var i = 0; i < this.items.length; i++) {
@@ -153,7 +153,7 @@
 
 				// 		//旧代码可删除
 				// 		// console.log('file://' + result.imgPath);
-				// 		// self.resultStr = "返回结果：\n" + JSON.stringify(result);
+				// 		// that.resultStr = "返回结果：\n" + JSON.stringify(result);
 				// 		// //图片上传服务器
 				// 		// uni.uploadFile({
 				// 		// 	url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
@@ -172,8 +172,8 @@
 				// 		// 	console.log('加载图片成功');
 				// 		// 	var base4 = bitmapT.toBase64Data();
 				// 		// 	console.log('lygg.base64=' + base4);
-				// 		// 	self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前100字符）：\n" + base4.substring(0, 100);
-				// 		// 	self.imgBase64Str = base4.replace(/[\r\n]/g, ""); //显示图片
+				// 		// 	that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前100字符）：\n" + base4.substring(0, 100);
+				// 		// 	that.imgBase64Str = base4.replace(/[\r\n]/g, ""); //显示图片
 				// 		// }, function(e) {
 				// 		// 	console.log('加载图片失败：' + JSON.stringify(e));
 				// 		// });
@@ -209,9 +209,9 @@
 					
 					
 					console.log('result=' + result);//图片存在 result.bestImgBase64，显示图片需要加头"data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, "")
-					self.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
-					self.resultStr = self.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
-					self.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
+					that.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
+					that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
+					that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
 				
 				
 					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
