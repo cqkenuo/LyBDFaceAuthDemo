@@ -215,12 +215,16 @@
 				
 				
 					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
+					//https://ask.dcloud.net.cn/question/30546, https://ask.dcloud.net.cn/question/76827
+					//http://www.html5plus.org/doc/zh_cn/io.html#plus.io.URLType, https://ask.dcloud.net.cn/article/94
 					var bitmapT = new plus.nativeObj.Bitmap('test');
 					//加载base64图片
 					bitmapT.loadBase64Data(result.bestImgBase64, function(res) {
+						console.log("longyoung.loadBase64Data.suc=" + JSON.stringify(res));
 						//保存base64图片
-						bitmapT.save("_faceImg/face.png", {}, function(res) {
+						bitmapT.save("_doc/face.png", {}, function(res) {
 							bitmapT.clear(); //销毁bitmap对象
+							console.log("longyoung.save.suc=" + JSON.stringify(res));
 				
 							//图片上传服务器
 							uni.uploadFile({
@@ -230,15 +234,30 @@
 								name: 'imgFile', //上传图片参数名
 								success: (res) => {
 									var data = res.data;
+								},
+								fail: (res) => {
+									console.log("longyoung.uploadFile.fail=", res);
+									// uni.showToast({
+									// 	title:'图片上传错误',
+									// 	icon:'none'
+									// })
 								}
 							});
 				
 						}, function(res) {
 							console.log("longyoung.save.fail=", res);
+							uni.showModal({
+								title:'bitmap保存错误',
+								content:JSON.stringify(res)
+							});
 						});
 				
 					}, function(res) {
 						console.log("longyoung.fail=", res);
+						uni.showModal({
+							title:'base64转bitmap错误',
+							content:JSON.stringify(res)
+						});
 					});
 					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
 				
