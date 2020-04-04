@@ -18,6 +18,12 @@
             	"navigationBarTitleText": "longyoung-ocr"
             }
         }
+		,{
+		    "path" : "pages/wxfacepay/wxfacepay",
+		    "style": {
+		    	"navigationBarTitleText": "longyoung-wxfacepay"
+		    }
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

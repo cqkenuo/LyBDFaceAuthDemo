@@ -15,6 +15,10 @@
 		<view class="button-sp-area">
 			<button type="primary" plain="true" @click="onToOCR()">OCR识别</button>
 		</view>
+		
+		<view class="button-sp-area">
+			<button type="primary" plain="true" @click="onToWXFacePay()">微信刷脸支付</button>
+		</view>
 
 	</view>
 </template>
@@ -36,6 +40,12 @@
 			onToOCR() {
 				uni.navigateTo({
 					url: "../bdocr/bdocr"
+				});
+			},
+			
+			onToWXFacePay() {
+				uni.navigateTo({
+					url: "../wxfacepay/wxfacepay"
 				});
 			},
 
