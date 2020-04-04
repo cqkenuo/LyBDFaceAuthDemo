@@ -1,10 +1,16 @@
 <!-- @author longyoung http://www.html5plus.org/doc/zh_cn/nativeobj.html-->
 <template>
 	<view class="content">
+		
+		<view class="c-hint margin-l-r" style="margin-top: 10rpx;">活体采集接入文档：</view>
+		<view class="c-hint margin-l-r" style="margin-top: 10rpx;">https://ext.dcloud.net.cn/plugin?id=976</view>
 
 		<view class="button-sp-area">
 			<button type="primary" plain="true" @click="onToScanFace()">活体采集</button>
 		</view>
+		
+		<view class="c-hint margin-l-r" style="margin-top: 10rpx;">OCR识别接入文档：</view>
+		<view class="c-hint margin-l-r" style="margin-top: 10rpx;">https://ext.dcloud.net.cn/plugin?id=1189</view>
 
 		<view class="button-sp-area">
 			<button type="primary" plain="true" @click="onToOCR()">OCR识别</button>

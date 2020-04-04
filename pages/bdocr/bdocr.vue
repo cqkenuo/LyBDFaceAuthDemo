@@ -85,7 +85,7 @@
 					// detectDirection: this.detectDirection,//是否检测图像朝向，0不检测，1检测
 					isAutoTakePhoto: this.isAutoTakePhoto //仅身份证有效，是否自动拍照，0手动，1自动
 				}, result => {
-					console.log('result=' + result); //图片存在 result.bestImgBase64，显示图片需要加头"data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, "")
+					console.log('result=' + JSON.stringify(result)); //图片存在 result.bestImgBase64，显示图片需要加头"data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, "")
 					that.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
 					that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
 					that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片

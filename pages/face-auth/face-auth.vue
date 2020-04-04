@@ -151,34 +151,6 @@
 					}
 				}
 
-				// 		//旧代码可删除
-				// 		// console.log('file://' + result.imgPath);
-				// 		// that.resultStr = "返回结果：\n" + JSON.stringify(result);
-				// 		// //图片上传服务器
-				// 		// uni.uploadFile({
-				// 		// 	url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
-				// 		// 	filePath: 'file://' + result.imgPath, //图片本地路径，上传服务器需要加这个头'file://'
-				// 		// 	method: 'post',
-				// 		// 	name: 'imgFile', //上传图片参数名
-				// 		// 	success: (res) => {
-				// 		// 		var data = res.data;
-				// 		// 	}
-				// 		// });
-
-				// 		// //***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
-				// 		// var bitmapT = new plus.nativeObj.Bitmap("test"); //test标识随便取
-				// 		// // 从本地加载Bitmap图片
-				// 		// bitmapT.load(result.imgPath, function() {
-				// 		// 	console.log('加载图片成功');
-				// 		// 	var base4 = bitmapT.toBase64Data();
-				// 		// 	console.log('lygg.base64=' + base4);
-				// 		// 	that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前100字符）：\n" + base4.substring(0, 100);
-				// 		// 	that.imgBase64Str = base4.replace(/[\r\n]/g, ""); //显示图片
-				// 		// }, function(e) {
-				// 		// 	console.log('加载图片失败：' + JSON.stringify(e));
-				// 		// });
-				// 		// //***有些同学，后台强烈要求传base64，下面是图片转base64的方法，没此需求的可以无视。
-
 				lyBDFaceAuth.scanFace({
 					licenseID: this.licenseIDStr, //安卓，iOS后缀不一样
 					actionAry: ary, //不传无动作
@@ -208,7 +180,7 @@
 					
 					
 					
-					console.log('result=' + result);//图片存在 result.bestImgBase64，显示图片需要加头"data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, "")
+					console.log('result=' + JSON.stringify(result));//图片存在 result.bestImgBase64，显示图片需要加头"data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, "")
 					that.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
 					that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
 					that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
