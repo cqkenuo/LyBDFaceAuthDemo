@@ -53,18 +53,22 @@
 		},
 		methods: {
 			onInitBtn() {
+				console.log('onInitBtn');
 				longyoungWXFacePay.initWxpayfaceLy({}, result => {
 					console.log('result=' + result);
 				});
 			},
 			onRawBtn() {
+				console.log('onRawBtn');
 				let that = this;
 				longyoungWXFacePay.getWxpayfaceRawdataLy({}, result => {
 					console.log('result=' + JSON.stringify(result));
-					that.postFaceAuthInfo(result.rawdata);
+					console.log("lygg.creat=" + result.plugin_creator);
+					that.postFaceAuthInfoSign(result.rawdata);
 				});
 			},
 			onPayBtn() {
+				console.log('onPayBtn');
 				longyoungWXFacePay.getWxpayfaceCodeLy({
 					face_authtype: 'FACEPAY',
 					appid: 'wx032fd2484bb99b79',
@@ -79,7 +83,7 @@
 				});
 			},
 
-			postFaceAuthInfo(str) {
+			postFaceAuthInfoSign(str) {
 				let that = this;
 
 				let data = {
@@ -89,9 +93,40 @@
 
 				};
 
-				let signStr = that.sign(data);
-				console.log("lygg.sign=" + signStr);
+				// let signStr = that.sign(data);
+				let signStr = '';
+				let dataSign = data;
+				dataSign.key = 'G6XREC0FN8JJPHWIS30O8P';
+				longyoungWXFacePay.signLy(dataSign, result => {
+					console.log('result.sign=' + JSON.stringify(result));
+					signStr = result.sign;
+					console.log("lygg.sign=" + signStr);
+					that.postFaceAuthInfo(signStr, data);
+				});
+				console.log("lygg.sign2=" + signStr);
+				
 
+			},
+			postFaceAuthInfo(signStr, data) {
+				let that = this;
+			
+			// 	let data = {
+			// 		store_id: '11',
+			// 		rawdata: str,
+			// 		nonce_str: '5d103f27b0e2b'
+			
+			// 	};
+			
+				// let signStr = that.sign(data);
+				// let signStr = '';
+				// let dataSign = data;
+				// dataSign.key = 'G6XREC0FN8JJPHWIS30O8P';
+				// longyoungWXFacePay.signLy(dataSign, result => {
+				// 	console.log('result.sign=' + JSON.stringify(result));
+				// 	signStr = result.sign;
+				// });
+				// console.log("lygg.sign=" + signStr);
+			
 				let json = {
 					appid: '3315919327',
 					method: 'wx_faceAuthInfo',

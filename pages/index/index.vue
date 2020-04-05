@@ -16,6 +16,9 @@
 			<button type="primary" plain="true" @click="onToOCR()">OCR识别</button>
 		</view>
 		
+		<view class="c-hint margin-l-r" style="margin-top: 10rpx;">微信刷脸支付接入文档：</view>
+		<view class="c-hint margin-l-r" style="margin-top: 10rpx;">https://ext.dcloud.net.cn/plugin?id=1583</view>
+		
 		<view class="button-sp-area">
 			<button type="primary" plain="true" @click="onToWXFacePay()">微信刷脸支付</button>
 		</view>

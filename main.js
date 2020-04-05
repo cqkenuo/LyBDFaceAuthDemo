@@ -40,9 +40,9 @@ const requestPromise = function(url, method, params, isLoading) {
 			data: params,
 			dataType: 'json',
 			timeout: 30 * 1000,
-			header: {
-				'content-type': 'application/x-www-form-urlencoded'
-			},
+			// header: {
+			// 	'content-type': 'application/x-www-form-urlencoded'
+			// },
 			success: (res) => {
 				uni.hideLoading();
 

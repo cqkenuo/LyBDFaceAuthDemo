@@ -114,7 +114,7 @@
             },
             "longyoung-WXFacePay" : {
                 "__plugin_info__" : {
-                    "name" : "微信刷脸支付",
+                    "name" : "【longyoung】微信刷脸支付",
                     "description" : "longyoung出品，如有疑问，关注公众号「longyoung」后台发消息提问。",
                     "platforms" : "Android",
                     "url" : "",
