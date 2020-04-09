@@ -30,7 +30,7 @@
 
 		<image class="" style="width: 300rpx;height: 300rpx;" :src="imgBase64Str"></image>
 
-		<view class="c-hint margin-l-r" style="margin-top: 30rpx;width: 700rpx;word-break:break-all;">{{resultStr}}</view>
+		<view class="c-hint margin-l-r text-wrapper" style="margin-top: 30rpx;width: 700rpx;word-break:break-all;">{{resultStr}}</view>
 
 	</view>
 </template>
@@ -408,5 +408,10 @@
 
 	.uni-list.uni-active {
 		height: auto;
+	}
+	
+	/*换行*/
+	.text-wrapper {
+	  white-space: pre-wrap;
 	}
 </style>

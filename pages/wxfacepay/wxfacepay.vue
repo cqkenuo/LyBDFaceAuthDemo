@@ -3,7 +3,23 @@
 	<view class="content">
 
 		<view class="button-sp-area">
-			<button type="primary" plain="true" @click="onInitBtn()">初始化</button>
+			<button type="primary" plain="true" @click="onInitBtn()">初始化支付</button>
+		</view>
+
+		<view class="button-sp-area">
+			<button type="primary" plain="true" @click="onInitKeybordBtn()">初始化键盘</button>
+		</view>
+
+		<view class="button-sp-area">
+			<button type="primary" plain="true" @click="onSetListenerDetectorBtn()">设置Detector监听</button>
+		</view>
+
+		<view class="button-sp-area">
+			<button type="primary" plain="true" @click="onSetListenerKeyboardBtn()">设置键盘监听</button>
+		</view>
+
+		<view class="button-sp-area">
+			<button type="primary" plain="true" @click="onOpenKeyboardLyBtn()">打开键盘</button>
 		</view>
 
 		<!-- <view class="c-hint margin-l-r" style="margin-top: 30rpx;">OCR的类型</view>
@@ -19,7 +35,7 @@
 
 		<image class="" style="width: 300rpx;height: 300rpx;" :src="imgBase64Str"></image>
 
-		<view class="c-hint margin-l-r" style="margin-top: 30rpx;width: 700rpx;word-break:break-all;">{{resultStr}}</view>
+		<view class="c-hint margin-l-r text-wrapper" style="margin-top: 30rpx;width: 700rpx;word-break:break-all;">{{resultStr}}</view>
 
 	</view>
 </template>
@@ -27,6 +43,8 @@
 <script>
 	import permijs from '../../utiles/permission.js'
 	import md5js from '../../utiles/md5.js'
+
+	//键盘，初始化成功，再设置监听。设置监听成功，再打开键盘。
 
 	var longyoungWXFacePay;
 
@@ -37,7 +55,9 @@
 				imgBase64Str: "",
 
 				authinfo: '',
-				out_trade_no: ''
+				out_trade_no: '',
+
+				payMoney: ''
 			}
 		},
 		onLoad() {
@@ -58,8 +78,10 @@
 		methods: {
 			onInitBtn() {
 				console.log('onInitBtn');
+				let that = this;
 				longyoungWXFacePay.initWxpayfaceLy({}, result => {
 					console.log('result=' + JSON.stringify(result));
+					that.resultStr += '\n' + JSON.stringify(result) + '\n';
 
 					///test
 					setTimeout(function() {
@@ -68,11 +90,147 @@
 
 					if (result && result.return_code == 'SUCCESS') {
 						uni.showToast({
-							title: '初始化成功'
+							icon: 'none',
+							title: '初始化支付成功'
 						})
 					}
 				});
 			},
+			onInitKeybordBtn() {
+				console.log('onInitKeybordBtn');
+				let that = this;
+				longyoungWXFacePay.initKeyboardLy({
+					layout: '0',
+					baudRate: '9600'
+				}, result => {
+					console.log('result=' + JSON.stringify(result));
+					that.resultStr += '\n' + JSON.stringify(result) + '\n';
+
+					if (result && result.return_code == 'SUCCESS') {
+						uni.showToast({
+							icon: 'none',
+							title: '初始化键盘成功'
+						})
+					}
+				});
+			},
+			onSetListenerDetectorBtn() {
+				console.log('onSetListenerDetectorBtn');
+				let that = this;
+				longyoungWXFacePay.setListenerDetectorLy({}, result => {
+					console.log('result=' + JSON.stringify(result));
+					that.resultStr += '\n' + JSON.stringify(result) + '\n';
+
+					if (result) {
+						if (result.return_code == 'SUCCESS') {
+							if (result.listener_type == 'onAttach') {
+								uni.showToast({
+									icon: 'none',
+									title: '键盘插入'
+								})
+
+								//中途插入，来一遍键盘流程
+								that.onInitKeybordBtn();
+								that.onSetListenerKeyboardBtn();
+								that.onOpenKeyboardLyBtn();
+							}
+							uni.showToast({
+								icon: 'none',
+								title: '初始化Detector成功'
+							})
+						} else if (result.return_code == 'ERROR') {
+							uni.showToast({
+								icon: 'none',
+								title: 'detector is null'
+							})
+						}
+					}
+				});
+			},
+			onSetListenerKeyboardBtn() {
+				console.log('onSetListenerKeyboardBtn');
+				let that = this;
+				longyoungWXFacePay.setListenerKeyboardLy({}, result => {
+					console.log('result=' + JSON.stringify(result));
+					that.resultStr += '\n' + JSON.stringify(result) + '\n';
+
+					if (result) {
+						if (result.return_code == 'SUCCESS') {
+							if (result.listener_type == 'onRelease') {
+								uni.showToast({
+									icon: 'none',
+									title: '键盘释放'
+								})
+							} else if (result.listener_type == 'onAvailable') {
+								that.updateSignalKeyboardLy();
+								uni.showToast({
+									icon: 'none',
+									title: '键盘可用'
+								})
+							} else if (result.listener_type == 'onPay') {
+								uni.showToast({
+									icon: 'none',
+									title: '点击支付'
+								})
+								that.payMoney = result.listener_money;
+
+								that.onPayBtn(); //调支付
+							} else if (result.listener_type == 'onKeyDown') {
+								uni.showToast({
+									icon: 'none',
+									title: '' + result.key_name
+								})
+							} else if (result.listener_type == 'onKeyUp') {}
+
+							uni.showToast({
+								icon: 'none',
+								title: '监听设置成功'
+							})
+						} else if (result.return_code == 'ERROR') {
+							if (result.listener_type == 'onException') {
+								uni.showToast({
+									icon: 'none',
+									title: '键盘异常'
+								})
+							}
+						}
+					}
+
+				});
+			},
+			updateSignalKeyboardLy() {
+				let that = this;
+				longyoungWXFacePay.updateSignalKeyboardLy({
+					wifi: '4',
+					gprs: '0'
+				}, result => {
+					console.log('result=' + JSON.stringify(result));
+					that.resultStr += '\n' + JSON.stringify(result) + '\n';
+
+					if (result && result.return_code == 'SUCCESS') {
+						uni.showToast({
+							icon: 'none',
+							title: 'updateSignalKeyboardLy 成功'
+						})
+					}
+				});
+			},
+			onOpenKeyboardLyBtn() {
+				console.log('onOpenKeyboardLyBtn');
+				let that = this;
+				longyoungWXFacePay.openKeyboardLy({}, result => {
+					console.log('result=' + JSON.stringify(result));
+					that.resultStr += '\n' + JSON.stringify(result) + '\n';
+
+					if (result && result.return_code == 'SUCCESS') {
+						uni.showToast({
+							icon: 'none',
+							title: '键盘打开成功'
+						})
+					}
+				});
+			},
+
 			onRawBtn() {
 				console.log('onRawBtn');
 				let that = this;
@@ -80,9 +238,11 @@
 					console.log('result=' + JSON.stringify(result));
 					console.log("lygg.creat=" + result.plugin_creator);
 					console.log("lygg.rawdata=" + result.rawdata);
+					that.resultStr += '\n' + JSON.stringify(result) + '\n';
 
 					if (result && result.return_code == 'FAIL') {
 						uni.showToast({
+							icon: 'none',
 							title: '获取 raw 失败'
 						})
 					}
@@ -93,18 +253,29 @@
 			onPayBtn() {
 				console.log('onPayBtn');
 				let that = this;
+
+				let money = Number(that.payMoney);
+				if (money <= 0) {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入金额'
+					})
+				}
+				money = money * 100;
+
 				longyoungWXFacePay.getWxpayfaceCodeLy({
 					face_authtype: 'FACEPAY',
 					appid: 'wx032fd2484bb99b79',
 					mch_id: '1493440642',
 					sub_mch_id: '1541612021',
 					store_id: '11',
-					total_fee: '1',
+					total_fee: money + '',
 					face_code_type: '0',
 					authinfo: that.authinfo,
 					out_trade_no: that.out_trade_no,
 				}, result => {
 					console.log('result=' + JSON.stringify(result));
+					that.resultStr += '\n' + JSON.stringify(result) + '\n';
 
 					let info = result;
 					if (info && info.face_code) {
@@ -112,8 +283,8 @@
 						let openid = info.openid; // openid
 						that.postPay(faceCode, openid);
 					} else {
-						// showToast("face_code 获取失败");
 						uni.showToast({
+							icon: 'none',
 							title: 'face_code 获取失败'
 						})
 						return;
@@ -124,6 +295,37 @@
 						console.log("lygg.setTimeout2");
 						longyoungWXFacePay.updateWxpayfacePayResultLy({}, result => {
 							console.log('result=' + JSON.stringify(result));
+							that.resultStr += '\n' + JSON.stringify(result) + '\n';
+
+							// result.return_code//公共返回码
+							// result.err_code//二级错误码，如是 USER_QUERY_CANCEL 表示用户取消查单
+							if (result == null || !result.return_code != 'SUCCESS') {
+								uni.showToast({
+									icon: 'none',
+									title: '未成功支付'
+								})
+								//通知键盘支付失败
+								longyoungWXFacePay.keyboardSetPayResultLy({
+									payResult: '0' //0失败1成功
+								}, result => {
+									console.log('result=' + JSON.stringify(result));
+									that.resultStr += '\n' + JSON.stringify(result) + '\n';
+								});
+								return;
+							}
+							/*
+							在这里处理您自己的业务逻辑：
+							执行到这里说明用户已经确认支付结果且成功了，此时刷脸支付界面关闭，您可以在这里选择跳转到其它界面
+							 */
+							//通知键盘支付成功
+							longyoungWXFacePay.keyboardSetPayResultLy({
+								payResult: '1' //0失败1成功
+							}, result => {
+								console.log('result=' + JSON.stringify(result));
+								that.resultStr += '\n' + JSON.stringify(result) + '\n';
+							});
+
+
 						});
 					}, 2 * 1000);
 
@@ -714,5 +916,10 @@
 
 	.uni-list.uni-active {
 		height: auto;
+	}
+
+	/*换行*/
+	.text-wrapper {
+		white-space: pre-wrap;
 	}
 </style>
