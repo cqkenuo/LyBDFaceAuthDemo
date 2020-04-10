@@ -281,7 +281,7 @@
 					if (info && info.face_code) {
 						let faceCode = info.face_code; // 人脸凭证，用于刷脸支付
 						let openid = info.openid; // openid
-						that.postPay(faceCode, openid);
+						that.postPay(faceCode, openid, money);
 					} else {
 						uni.showToast({
 							icon: 'none',
@@ -299,7 +299,7 @@
 
 							// result.return_code//公共返回码
 							// result.err_code//二级错误码，如是 USER_QUERY_CANCEL 表示用户取消查单
-							if (result == null || !result.return_code != 'SUCCESS') {
+							if (result == null || result.return_code != 'SUCCESS') {
 								uni.showToast({
 									icon: 'none',
 									title: '未成功支付'
@@ -387,12 +387,12 @@
 
 					});
 			},
-			postPay(faceCode, openId) {
+			postPay(faceCode, openId, money) {
 				let that = this;
-
+				
 				let data = {
 					store_id: '11',
-					total: '1',
+					total: money,
 					openId: openId,
 					faceCode: faceCode,
 					out_trade_no: that.out_trade_no,
