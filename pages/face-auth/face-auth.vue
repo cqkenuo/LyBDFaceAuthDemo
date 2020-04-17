@@ -31,7 +31,7 @@
 			<label class="ml-30">
 				<radio style="transform: scale(0.7);" value="r22" />无声音</label>
 		</radio-group>
-		
+
 		<view class="c-hint margin-l-r" style="margin-top: 30rpx">前后摄像头</view>
 		<radio-group @change="onChange3" class="margin-l-r">
 			<label class="">
@@ -110,7 +110,7 @@
 				txtColor: '#3987FD',
 				bgColor: '#2F2F33',
 				roundColor: '#3987FD',
-				zoom: 0.75,//圆圈里的影像有黑边才传，没问题不要传（代码已适配，有些机型没测试到才会有问题），仅ios有效，iPhone0.7,iPad0.9
+				zoom: 0.75, //圆圈里的影像有黑边才传，没问题不要传（代码已适配，有些机型没测试到才会有问题），仅ios有效，iPhone0.7,iPad0.9
 
 				resultStr: "",
 				imgBase64Str: ""
@@ -121,19 +121,19 @@
 			if (uni.getSystemInfoSync().platform == "ios") {
 				//权限
 				// this.judgeIosPermission('camera');//相机
-				
+
 				this.licenseIDStr = "longyoung-face-ios";
 			} else if (uni.getSystemInfoSync().platform == "android") {
 				//权限
 				this.requestAndroidPermission('android.permission.CAMERA'); //相机
 				// this.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE');//外部存储(含相册)读取权限
 				// this.requestAndroidPermission('android.permission.WRITE_EXTERNAL_STORAGE');//外部存储(含相册)写入权限
-				
+
 				this.licenseIDStr = "longyoung-face-android";
 			}
-			
+
 			//引用插件
-			lyBDFaceAuth = uni.requireNativePlugin('longyoung-BDFaceAuth'); 
+			lyBDFaceAuth = uni.requireNativePlugin('longyoung-BDFaceAuth');
 			// #endif
 		},
 		methods: {
@@ -165,77 +165,96 @@
 
 					//模拟登录
 					uni.showLoading({
-						mask:true,
-						title:"登录中"
+						mask: true,
+						title: "登录中"
 					});
 					let timeoutId = setTimeout(function() {
 						uni.hideLoading();
 						uni.showToast({
-							title:"登录成功",
-							icon:"none"
+							title: "登录成功",
+							icon: "none"
 						})
 						clearTimeout(timeoutId);
-					}, 2*1000);
+					}, 2 * 1000);
 					//模拟登录
-					
-					
-					
-					console.log('result=' + JSON.stringify(result));//图片存在 result.bestImgBase64，显示图片需要加头"data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, "")
-					that.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
-					that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
-					that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
-				
-				
+
+
+
+					// console.log('result=' + JSON.stringify(result));//图片存在 result.bestImgBase64，显示图片需要加头"data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, "")
+					// that.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
+					// that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
+
+					console.log('result.all=' + JSON.stringify(result));//全部
+					if (result.bestImgBase64) {
+						that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
+						that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
+						delete result.bestImgBase64; //删除bestImgBase64
+					}
+					that.resultStr = that.resultStr + "\n======不包含图片部分：\n" + JSON.stringify(result);
+					console.log('result.noImg=' + JSON.stringify(result));//不含图片
+
+					//关闭页面
+					if (result.status == 0) {
+						if (result.err_code == 0) {
+							lyBDFaceAuth.closeAty({}, result => {
+								console.log('result.closeAty=' + JSON.stringify(result));
+							});
+						}
+					}
+
+
 					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
 					//https://ask.dcloud.net.cn/question/30546, https://ask.dcloud.net.cn/question/76827
 					//http://www.html5plus.org/doc/zh_cn/io.html#plus.io.URLType, https://ask.dcloud.net.cn/article/94
-					var bitmapT = new plus.nativeObj.Bitmap('test');
-					//加载base64图片
-					bitmapT.loadBase64Data(result.bestImgBase64, function(res) {
-						console.log("longyoung.loadBase64Data.suc=" + JSON.stringify(res));
-						//保存base64图片
-						bitmapT.save("_doc/face.png", {}, function(res) {
-							bitmapT.clear(); //销毁bitmap对象
-							console.log("longyoung.save.suc=" + JSON.stringify(res));
-				
-							//图片上传服务器
-							uni.uploadFile({
-								url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
-								filePath: res.target,
-								method: 'post',
-								name: 'imgFile', //上传图片参数名
-								success: (res) => {
-									var data = res.data;
-								},
-								fail: (res) => {
-									console.log("longyoung.uploadFile.fail=", res);
-									// uni.showToast({
-									// 	title:'图片上传错误',
-									// 	icon:'none'
-									// })
-								}
+					if (result.bestImgBase64) {
+						var bitmapT = new plus.nativeObj.Bitmap('test');
+						//加载base64图片
+						bitmapT.loadBase64Data(result.bestImgBase64, function(res) {
+							console.log("longyoung.loadBase64Data.suc=" + JSON.stringify(res));
+							//保存base64图片
+							bitmapT.save("_doc/face.png", {}, function(res) {
+								bitmapT.clear(); //销毁bitmap对象
+								console.log("longyoung.save.suc=" + JSON.stringify(res));
+
+								//图片上传服务器
+								uni.uploadFile({
+									url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
+									filePath: res.target,
+									method: 'post',
+									name: 'imgFile', //上传图片参数名
+									success: (res) => {
+										var data = res.data;
+									},
+									fail: (res) => {
+										console.log("longyoung.uploadFile.fail=", res);
+										// uni.showToast({
+										// 	title:'图片上传错误',
+										// 	icon:'none'
+										// })
+									}
+								});
+
+							}, function(res) {
+								console.log("longyoung.save.fail=", res);
+								uni.showModal({
+									title: 'bitmap保存错误',
+									content: JSON.stringify(res)
+								});
 							});
-				
+
 						}, function(res) {
-							console.log("longyoung.save.fail=", res);
+							console.log("longyoung.fail=", res);
 							uni.showModal({
-								title:'bitmap保存错误',
-								content:JSON.stringify(res)
+								title: 'base64转bitmap错误',
+								content: JSON.stringify(res)
 							});
 						});
-				
-					}, function(res) {
-						console.log("longyoung.fail=", res);
-						uni.showModal({
-							title:'base64转bitmap错误',
-							content:JSON.stringify(res)
-						});
-					});
+					}
 					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
-				
+
 				});
-				
-				
+
+
 
 			},
 
@@ -541,9 +560,9 @@
 	.uni-list.uni-active {
 		height: auto;
 	}
-	
+
 	/*换行*/
 	.text-wrapper {
-	  white-space: pre-wrap;
+		white-space: pre-wrap;
 	}
 </style>
