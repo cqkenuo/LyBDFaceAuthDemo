@@ -113,6 +113,7 @@
 				zoom: 0.75, //圆圈里的影像有黑边才传，没问题不要传（代码已适配，有些机型没测试到才会有问题），仅ios有效，iPhone0.7,iPad0.9
 
 				resultStr: "",
+				bestImgBase64Str: undefined,
 				imgBase64Str: ""
 			}
 		},
@@ -139,7 +140,15 @@
 		methods: {
 			//刷脸
 			onScanFace() {
-				console.error("tagg.onScanFace");
+				console.error("lygg.onScanFace");
+				
+				// #ifndef APP-PLUS
+				uni.showToast({
+					icon:'none',
+					title:'请使用真机测试'
+				})
+				return;
+				// #endif
 
 				let that = this;
 
@@ -184,16 +193,17 @@
 					// that.resultStr = "返回结果（太长，截取前200字符）：\n" + JSON.stringify(result).substring(0, 200);
 					// that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
 
-					console.log('result.all=' + JSON.stringify(result));//全部
+					console.log('result.all=' + JSON.stringify(result)); //返回结果全部打印
 					if (result.bestImgBase64) {
 						that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
+						that.bestImgBase64Str = result.bestImgBase64;
 						that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
 						delete result.bestImgBase64; //删除bestImgBase64
 					}
 					that.resultStr = that.resultStr + "\n======不包含图片部分：\n" + JSON.stringify(result);
-					console.log('result.noImg=' + JSON.stringify(result));//不含图片
+					console.log('result.noImg=' + JSON.stringify(result)); //返回结果，不含图片打印
 
-					//关闭页面
+					//关闭页面，status=0 且 err_code=0，检测超时，仅安卓有效，iOS 无超时的说法
 					if (result.status == 0) {
 						if (result.err_code == 0) {
 							lyBDFaceAuth.closeAty({}, result => {
@@ -202,26 +212,25 @@
 						}
 					}
 
-
 					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
 					//https://ask.dcloud.net.cn/question/30546, https://ask.dcloud.net.cn/question/76827
 					//http://www.html5plus.org/doc/zh_cn/io.html#plus.io.URLType, https://ask.dcloud.net.cn/article/94
-					if (result.bestImgBase64) {
+					if (that.bestImgBase64Str) {
 						var bitmapT = new plus.nativeObj.Bitmap('test');
 						//加载base64图片
-						bitmapT.loadBase64Data(result.bestImgBase64, function(res) {
+						bitmapT.loadBase64Data(that.bestImgBase64Str, function(res) {
 							console.log("longyoung.loadBase64Data.suc=" + JSON.stringify(res));
-							//保存base64图片
+							//保存base64图片，请不要私自改变 _doc/ 除非你明确的知道 Bitmap.save() 的用法。
 							bitmapT.save("_doc/face.png", {}, function(res) {
 								bitmapT.clear(); //销毁bitmap对象
 								console.log("longyoung.save.suc=" + JSON.stringify(res));
 
 								//图片上传服务器
 								uni.uploadFile({
-									url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址
+									url: 'http://api.longyoung.com/api/open/common/uploadImgTemp', //图片上传地址，填你们自己的，详情查看 uni.uploadFile(OBJECT) 这个 api。
 									filePath: res.target,
 									method: 'post',
-									name: 'imgFile', //上传图片参数名
+									name: 'imgFile', //上传图片参数名，填你们自己的，详情查看 uni.uploadFile(OBJECT) 这个 api。
 									success: (res) => {
 										var data = res.data;
 									},
@@ -252,8 +261,9 @@
 					}
 					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
 
-				});
 
+
+				});
 
 
 			},

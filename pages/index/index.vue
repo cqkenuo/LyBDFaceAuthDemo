@@ -2,7 +2,7 @@
 <template>
 	<view class="content">
 		
-		<view class="c-hint margin-l-r" style="margin-top: 10rpx;margin-bottom: 50rpx;color: #ff0000;font-size: 24rpx;">Tips：以下每个功能对应一个插件，需要单独购买。</view>
+		<view class="c-hint margin-l-r" style="margin-top: 10rpx;margin-bottom: 50rpx;color: #ff0000;font-size: 24rpx;">Tips：以下每个按钮对应一个插件，需要单独购买。</view>
 		
 		<view class="c-hint margin-l-r" style="margin-top: 10rpx;">活体采集接入文档地址：</view>
 		<view class="c-hint margin-l-r" style="margin-top: 10rpx;">https://ext.dcloud.net.cn/plugin?id=976</view>
