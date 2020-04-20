@@ -49,7 +49,9 @@
             /* ios打包配置 */
             "ios" : {},
             /* SDK配置 */
-            "sdkConfigs" : {},
+            "sdkConfigs" : {
+                "ad" : {}
+            },
             "icons" : {
                 "android" : {
                     "hdpi" : "unpackage/res/icons/72x72.png",
@@ -86,12 +88,12 @@
         "nativePlugins" : {
             "longyoung-BDFaceAuth" : {
                 "__plugin_info__" : {
-                    "name" : "【横竖屏后摄】人脸识别、百度活体检测、人脸采集【双端】",
+                    "name" : "【横竖屏后摄】人脸识别、百度活体检测、人脸采集【平板】",
                     "description" : "百度免费提供活体检测，有疑问，关注公众号「longyoung」后台发消息提问。支持平板横竖屏后摄。",
                     "platforms" : "Android,iOS",
                     "url" : "https://ext.dcloud.net.cn/plugin?id=976",
                     "android_package_name" : "com.longyoung.facedemo",
-                    "ios_bundle_id" : "",
+                    "ios_bundle_id" : "com.longyoung.facedemo",
                     "isCloud" : true,
                     "bought" : 1,
                     "pid" : "976",
@@ -100,9 +102,9 @@
             },
             "longyoung-BDOCR" : {
                 "__plugin_info__" : {
-                    "name" : "【限免】百度身份证识别、银行卡识别、文字识别",
+                    "name" : "【实惠】百度身份证识别、银行卡识别、车牌识别、文字识别OCR",
                     "description" : "longyoung出品，如有疑问，关注公众号「longyoung」后台发消息提问。",
-                    "platforms" : "Android",
+                    "platforms" : "Android,iOS",
                     "url" : "https://ext.dcloud.net.cn/plugin?id=1189",
                     "android_package_name" : "com.longyoung.facedemo",
                     "ios_bundle_id" : "com.longyoung.facedemo",
@@ -115,14 +117,14 @@
             "longyoung-WXFacePay" : {
                 "__plugin_info__" : {
                     "name" : "【longyoung】微信刷脸支付",
-                    "description" : "longyoung出品，如有疑问，关注公众号「longyoung」后台发消息提问。",
+                    "description" : "有疑问，关注公众号「longyoung」后台发消息提问。",
                     "platforms" : "Android",
-                    "url" : "",
-                    "android_package_name" : "",
-                    "ios_bundle_id" : "",
-                    "isCloud" : false,
-                    "bought" : -1,
-                    "pid" : "",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=1583",
+                    "android_package_name" : "com.longyoung.facedemo",
+                    "ios_bundle_id" : "com.longyoung.facedemo",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "1583",
                     "parameters" : {}
                 }
             }

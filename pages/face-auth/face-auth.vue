@@ -1,7 +1,9 @@
 <!-- @author longyoung http://www.html5plus.org/doc/zh_cn/nativeobj.html-->
 <template>
 	<view class="content">
-
+		
+		<view class="c-hint margin-l-r" style="margin-top: 10rpx;margin-bottom: 50rpx;color: #ff0000;font-size: 24rpx;">Tips：返回结果在页尾打印展示。</view>
+		
 		<view class="c-hint margin-l-r" style="margin-top: 30rpx;">licenseID</view>
 		<input v-model="licenseIDStr" class="margin-l-r" placeholder="请输入" />
 
