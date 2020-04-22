@@ -1,7 +1,7 @@
 <!-- @author longyoung http://www.html5plus.org/doc/zh_cn/nativeobj.html-->
 <template>
 	<view class="content">
-		
+
 		<view class="c-hint margin-l-r" style="margin-top: 10rpx;margin-bottom: 50rpx;color: #ff0000;font-size: 24rpx;">Tips：返回结果在页尾打印展示。</view>
 
 		<view class="c-hint margin-l-r" style="margin-top: 30rpx;">OCR的类型</view>
@@ -74,11 +74,11 @@
 			//开始
 			onStartBtn() {
 				console.error("lygg.onStartBtn");
-				
+
 				// #ifndef APP-PLUS
 				uni.showToast({
-					icon:'none',
-					title:'请使用真机测试'
+					icon: 'none',
+					title: '请使用真机测试'
 				})
 				return;
 				// #endif
