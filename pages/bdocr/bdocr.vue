@@ -94,28 +94,19 @@
 					type: this.type,
 					accuracy: this.accuracy, //支持这三个字符串：auto、normal、high，精准度，精度越高，速度越慢。default：auto
 					// detectDirection: this.detectDirection,//是否检测图像朝向，0不检测，1检测
-					isAutoTakePhoto: this.isAutoTakePhoto //仅身份证有效，是否自动拍照，0手动，1自动
+					isAutoTakePhoto: this.isAutoTakePhoto //仅 type 为身份证有效，是否自动拍照，0手动，1自动
 				}, result => {
 					console.log('result.all=' + JSON.stringify(result)); //返回结果全部打印
 					if (result.bestImgBase64) {
 						that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
 						that.bestImgBase64Str = result.bestImgBase64;
-						that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
+						that.resultStr = that.resultStr + "\n\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
 						delete result.bestImgBase64; //删除bestImgBase64
 					}
 					that.resultStr = that.resultStr + "\n======不包含图片部分：\n" + JSON.stringify(result);
 					console.log('result.noImg=' + JSON.stringify(result)); //返回结果，不含图片打印
 
-					//关闭页面，status=0 且 err_code=0，检测超时，仅安卓有效，iOS 无超时的说法
-					if (result.status == 0) {
-						if (result.err_code == 0) {
-							lyBDFaceAuth.closeAty({}, result => {
-								console.log('result.closeAty=' + JSON.stringify(result));
-							});
-						}
-					}
-
-					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
+					//***使用 uni.uploadFile()上传服务器，不需要将图片上传到服务器的，注释此处代码。
 					//https://ask.dcloud.net.cn/question/30546, https://ask.dcloud.net.cn/question/76827
 					//http://www.html5plus.org/doc/zh_cn/io.html#plus.io.URLType, https://ask.dcloud.net.cn/article/94
 					if (that.bestImgBase64Str) {
@@ -162,7 +153,7 @@
 							});
 						});
 					}
-					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
+					//***使用 uni.uploadFile()上传服务器，不需要将图片上传到服务器的，注释此处代码。
 
 
 

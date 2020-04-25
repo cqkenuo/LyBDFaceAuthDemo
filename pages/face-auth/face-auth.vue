@@ -198,7 +198,7 @@
 					if (result.bestImgBase64) {
 						// that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
 						that.bestImgBase64Str = result.bestImgBase64;
-						that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
+						that.resultStr = that.resultStr + "\n\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
 						delete result.bestImgBase64; //删除bestImgBase64
 					}
 					that.resultStr = that.resultStr + "\n======不包含图片部分：\n" + JSON.stringify(result);
