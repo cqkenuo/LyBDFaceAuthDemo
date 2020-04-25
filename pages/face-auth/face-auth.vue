@@ -58,7 +58,7 @@
 			<button type="primary" plain="true" @click="onScanFace()">开始活体采集</button>
 		</view>
 
-		<image class="" style="width: 300rpx;height: 300rpx;" :src="imgBase64Str"></image>
+		<image mode="aspectFit" class="" style="width: 300rpx;height: 300rpx;" :src="imgBase64Str"></image>
 
 		<view class="c-hint margin-l-r text-wrapper" style="margin-top: 30rpx;width: 700rpx;word-break:break-all;">{{resultStr}}</view>
 
@@ -69,7 +69,6 @@
 	import permijs from '../../utiles/permission.js'
 
 	var lyBDFaceAuth;
-	// var lyBDFaceAuthIOS;
 
 	export default {
 		data() {
@@ -197,7 +196,7 @@
 
 					console.log('result.all=' + JSON.stringify(result)); //返回结果全部打印
 					if (result.bestImgBase64) {
-						that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
+						// that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
 						that.bestImgBase64Str = result.bestImgBase64;
 						that.resultStr = that.resultStr + "\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
 						delete result.bestImgBase64; //删除bestImgBase64
@@ -223,9 +222,31 @@
 						bitmapT.loadBase64Data(that.bestImgBase64Str, function(res) {
 							console.log("longyoung.loadBase64Data.suc=" + JSON.stringify(res));
 							//保存base64图片，请不要私自改变 _doc/ 这个头，除非你明确的知道 Bitmap.save() 的用法。
-							bitmapT.save("_doc/face.png", {}, function(res) {
+							var options = {
+								overwrite:true,
+								format:'png',
+								quality:50,
+								//去左右黑边
+								// clip:{
+								// 	width:'60%',
+								// 	left:'20%',//(100%-60%)/2
+								// 	height:'100%',
+								// 	top:'0%'
+								// },
+								//截取头部
+								clip:{
+									width:'60%',
+									left:'20%',//(100%-60%)/2
+									height:'66%',
+									top:'9%'
+								},
+							};
+							
+							bitmapT.save("_doc/face.png", options, function(res) {
 								bitmapT.clear(); //销毁bitmap对象
 								console.log("longyoung.save.suc=" + JSON.stringify(res));
+								
+								that.imgBase64Str = res.target;
 
 								//图片上传服务器
 								uni.uploadFile({
