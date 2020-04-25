@@ -205,7 +205,7 @@
 					that.resultStr = that.resultStr + "\n======不包含图片部分：\n" + JSON.stringify(result);
 					console.log('result.noImg=' + JSON.stringify(result)); //返回结果，不含图片打印
 
-					//关闭页面，status=0 且 err_code=0，检测超时，仅安卓有效，iOS 无超时的说法
+					//status=0 且 err_code=0，为检测超时回调，仅安卓有效，iOS 无超时的说法。此处举例做关闭页面的操作，你可以做自己的逻辑。
 					if (result.status == 0) {
 						if (result.err_code == 0) {
 							lyBDFaceAuth.closeAty({}, result => {
@@ -214,7 +214,7 @@
 						}
 					}
 
-					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
+					//***使用 uni.uploadFile()上传服务器，不需要将图片上传到服务器的，注释此处代码。
 					//https://ask.dcloud.net.cn/question/30546, https://ask.dcloud.net.cn/question/76827
 					//http://www.html5plus.org/doc/zh_cn/io.html#plus.io.URLType, https://ask.dcloud.net.cn/article/94
 					if (that.bestImgBase64Str) {
@@ -222,7 +222,7 @@
 						//加载base64图片
 						bitmapT.loadBase64Data(that.bestImgBase64Str, function(res) {
 							console.log("longyoung.loadBase64Data.suc=" + JSON.stringify(res));
-							//保存base64图片，请不要私自改变 _doc/ 除非你明确的知道 Bitmap.save() 的用法。
+							//保存base64图片，请不要私自改变 _doc/ 这个头，除非你明确的知道 Bitmap.save() 的用法。
 							bitmapT.save("_doc/face.png", {}, function(res) {
 								bitmapT.clear(); //销毁bitmap对象
 								console.log("longyoung.save.suc=" + JSON.stringify(res));
@@ -261,7 +261,7 @@
 							});
 						});
 					}
-					//***不传base64的，看这里，使用 uni.uploadFile()上传服务器，没此需求的可以无视。
+					//***使用 uni.uploadFile()上传服务器，不需要将图片上传到服务器的，注释此处代码。
 
 
 
