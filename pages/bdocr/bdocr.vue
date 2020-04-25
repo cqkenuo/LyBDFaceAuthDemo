@@ -98,7 +98,7 @@
 				}, result => {
 					console.log('result.all=' + JSON.stringify(result)); //返回结果全部打印
 					if (result.bestImgBase64) {
-						that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
+						// that.imgBase64Str = "data:image/png;base64," + result.bestImgBase64.replace(/[\r\n]/g, ""); //显示图片
 						that.bestImgBase64Str = result.bestImgBase64;
 						that.resultStr = that.resultStr + "\n\n======base64字符串（太长，截取前200字符）：\n" + result.bestImgBase64.substring(0, 200);
 						delete result.bestImgBase64; //删除bestImgBase64
@@ -118,6 +118,8 @@
 							bitmapT.save("_doc/face.png", {}, function(res) {
 								bitmapT.clear(); //销毁bitmap对象
 								console.log("longyoung.save.suc=" + JSON.stringify(res));
+								
+								that.imgBase64Str = res.target;//显示图片
 
 								//图片上传服务器
 								uni.uploadFile({

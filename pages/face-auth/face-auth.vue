@@ -221,7 +221,6 @@
 						//加载base64图片
 						bitmapT.loadBase64Data(that.bestImgBase64Str, function(res) {
 							console.log("longyoung.loadBase64Data.suc=" + JSON.stringify(res));
-							//保存base64图片，请不要私自改变 _doc/ 这个头，除非你明确的知道 Bitmap.save() 的用法。
 							var options = {
 								overwrite:true,
 								format:'png',
@@ -241,12 +240,12 @@
 									top:'9%'
 								},
 							};
-							
+							//保存base64图片，请不要私自改变 _doc/ 这个头，除非你明确的知道 Bitmap.save() 的用法。
 							bitmapT.save("_doc/face.png", options, function(res) {
 								bitmapT.clear(); //销毁bitmap对象
 								console.log("longyoung.save.suc=" + JSON.stringify(res));
 								
-								that.imgBase64Str = res.target;
+								that.imgBase64Str = res.target;//显示图片
 
 								//图片上传服务器
 								uni.uploadFile({
